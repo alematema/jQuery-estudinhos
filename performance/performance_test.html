@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<style>
+		body {
+			margin: 0;
+		}
+
+		.testes {
+			display: flex;
+			width: 100%;
+		}
+
+		.insere-elementos-um-a-um {
+			width: 50%;
+			text-align: center;
+			border: 1px solid black;
+			border-radius: 10px;
+			overflow: auto;
+			max-height: 700px;
+			position: relative;
+		}
+
+		.insere-elementos-todos-de-uma-vez {
+			width: 50%;
+			text-align: center;
+			border: 1px solid black;
+			border-radius: 10px;
+			overflow: auto;
+			max-height: 700px;
+			position: relative;
+		}
+
+		h2 {
+			background-color: azure;
+			color: #666;
+			position: fixed;
+			top: 9.5%;
+			/*			left: 1%;*/
+		}
+
+		.invisivel {
+			text-align: left;
+			margin-left: 20%;
+			margin-top: 20%;
+			display: none;
+			font-size: 150%;
+
+		}
+
+		.botao {
+			background-color: blue;
+			border-radius: 10px;
+			color: white;
+			font-size: 150%;
+			cursor: pointer;
+			float: right;
+		}
+
+		.botao2 {
+			font-size: 110%;
+			cursor: pointer;
+			display: none;
+			border-radius: 10px;
+			background-color: mediumblue;
+			color: white;
+		}
+
+		.botao2:hover {
+			box-shadow: 0 0 5px 2px blue;
+		}
+
+		.code {
+			opacity: 0.9;
+			position: absolute;
+			top: 12%;
+			width: 49.5%;
+			left: 0%;
+			display: none;
+			background-color: chartreuse;
+			color: white;
+			border-radius: 20px;
+		}
+
+		.code-um-a-um {
+			opacity: 0.9;
+			position: absolute;
+			top: 12%;
+			width: 49.5%;
+			right: 0%;
+			display: none;
+			background-color: greenyellow;
+			color: white;
+			border-radius: 20px;
+		}
+
+	</style>
+
+	<title> jquery perfomance test </title>
+
+</head>
+
+<body>
+
+	<h1 style="width: 100%; text-align: center;background-color: blue;color: white;border-radius: 10px;">jQUERY TESTES DE PERFORMANCE</h1>
+	<div class="testes">
+
+		<div class='insere-elementos-um-a-um'>
+
+			<h2>teste : Inserir 1000 elementos um a um</h2>
+
+			<div style='display: -webkit-inline-box; width: 80%;margin-top: 10%;'>
+				<span id="duracao-um-a-um" style='display:none;font-size: 190%;'>duração : </span>
+				<button class="botao2" id="botao-mostrar-codigo-um-a-um">ver codigo</button>
+				<button class="botao2" id="botao-rodar-codigo-um-a-um">rodar teste</button>
+			</div>
+
+			<button class="botao" id="botao-um-a-um">INICIAR</button>
+			<ul style="list-style-type: none; font-size: 150%;" id="itens-um-a-um"></ul>
+
+		</div>
+
+		<div class='insere-elementos-todos-de-uma-vez'>
+
+			<h2>teste : Inserir 1000 elementos todos uma vez</h2>
+
+			<div style='display: -webkit-inline-box; width: 80%;margin-top: 10%;'>
+				<span id="duracao-todos-uma-vez" style='display:none;font-size: 190%;'>duração :
+				</span>
+				<button class="botao2" id="botao-mostrar-codigo-todos">ver codigo</button>
+				<button class="botao2" id="botao-rodar-codigo-todos-uma-vez">rodar teste</button>
+			</div>
+			<button class="botao" id="botao-todos">INICIAR</button>
+			<ul style="list-style-type: none; font-size: 150%;" id="itens-todos-de-uma-vez"></ul>
+
+		</div>
+
+	</div>
+	<iframe id="todos" class="code" src="js/teste_todos_uma_vez.js" height="100%" width="100%"></iframe>
+	<iframe id='um-a-um' class='code-um-a-um' src="js/teste_um_a_um.js" height="100%" width="100%"></iframe>
+
+
+	<script src="../jquery.js"></script>
+	<script src="js/teste_um_a_um.js"></script>
+	<script src="js/teste_todos_uma_vez.js"></script>
+
+</body>
+
+</html>

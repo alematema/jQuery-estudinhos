@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+	body {
+		margin: 0;
+		background-color: darkgrey
+	}
+
+	.container {
+		background-color: lightblue;
+		padding: 20px;
+	}
+
+	.div-animada {
+		font-size: 200%;
+		/*		margin-left: -50px;*/
+		text-align: center;
+		text-shadow: -1px -1px grey;
+	}
+
+</style>
+
+<body>
+
+	<div class='container'>
+
+		<div class="div-animada">
+			<h3>This is a moving text in a div element</h3>
+			<p>This is some moving text in a p element.</p>
+		</div>
+
+	</div>
+
+	<div>
+
+		<button style='margin: 0 auto' id="botao-direcao">⊲</button>
+
+	</div>
+
+	<script src="../jquery.js"></script>
+	<script>
+
+		var iteracoes = 1000;
+		var intervaloAnimacao = setInterval(animar, 1);
+		var marginEsquerda = $('.div-animada').css('margin-left').replace('px', '');
+		var codigo = animarParaEsquerda;
+
+		var botaoDirecao = $('#botao-direcao');
+
+		botaoDirecao.click(function() {
+
+			if (botaoDirecao.text() == '⊲') {
+				botaoDirecao.text('⊳');
+				codigo = animarParaDireita;
+			} else {
+				botaoDirecao.text('⊲');
+				codigo = animarParaEsquerda;
+			}
+			
+			clearInterval(intervaloAnimacao);
+			intervaloAnimacao = setInterval(animar,1);
+			
+		});
+
+
+		function animar() {
+
+			executar(codigo);
+			iteracoes--;
+			if (iteracoes == 0) {
+				clearInterval(intervaloAnimacao);
+			}
+
+		}
+
+		function executar(codigo) {
+			codigo();
+		}
+
+		function animarParaEsquerda() {
+			marginEsquerda -= 1;
+			var marginLeft = 'margin-left:' + marginEsquerda + 'px';
+			$('.div-animada').attr('style', marginLeft);
+		}
+
+		function animarParaDireita() {
+			marginEsquerda += 1;
+			var marginLeft = 'margin-left:' + marginEsquerda + 'px';
+			$('.div-animada').attr('style', marginLeft);
+		}
+
+	</script>
+
+</body>
+
+</html>

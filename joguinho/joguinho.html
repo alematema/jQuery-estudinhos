@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<style>
+	body {
+		margin: 0;
+		background-color: tomato;
+	}
+
+	.darts-to-shoot {
+		background-color: lightblue;
+		padding: 5%;
+		position: relative;
+	}
+	
+	p{
+		position: absolute;
+		left: 1%;
+		bottom: 0;
+		font-weight: bold;
+		font-size: 120%;
+		color: white
+	}
+	span{
+		font-size: 200%;
+	}
+
+	.gun-place {}
+
+	#gun {
+		top: 350px;
+		left: 45%;
+	}
+
+	.shoot {
+		position: absolute;
+		width: 2px;
+		height: 20px;
+		background-color: white;
+		border-radius: 3px;
+		box-shadow: 0 0 3px 2px white;
+	}
+	
+	.shoot-death {
+		position: absolute;
+		width: 2px;
+		height: 20px;
+		background-color: orange;
+		border-radius: 3px;
+		box-shadow: 0 0 5px 2px white;
+	}
+	
+	.big-shoot{
+		
+		position: absolute;
+		width: 4px;
+		height: 50px;
+		background-color: white;
+		border-radius: 5px;
+		box-shadow: 0 0 5px 2px white;
+		
+	}
+
+</style>
+
+<body>
+
+	<div class='darts-to-shoot'>
+	
+		
+	
+	</div>
+
+	<div class="gun-place">
+		<a id="gun" class="btn-floating btn-large waves-effect waves-light red"><i class="large material-icons">change_history</i></a>
+		<p>Space = um tiro;<br> Ctrl + Space = vários tiros<br><span>&uarr;</span> move para cima<br><span>&rarr;</span> move para direita<br><span>&darr;</span> move para baixo<br><span>&larr;</span> move para esquerda</p>
+	</div>
+
+	<script src="../jquery.js"></script>
+	<script>
+		
+		var step = 140;
+		var gun = $('#gun');
+		var gunPlace = $('.gun-place');
+		gun.moveTo = moveTo;
+		gun.shoot = shoot;
+		gun.bigShoot = bigShoot;
+
+		//o limite superior do gunplace
+		var topLimit = parseFloat($('.darts-to-shoot').offset().top) + parseFloat($('.darts-to-shoot').height()) + parseFloat($('.darts-to-shoot').css('padding-top').replace('px', '')) + parseFloat($('.darts-to-shoot').css('padding-bottom').replace('px', ''));
+		//o limite esquerdo gunplace
+		var leftLimit = parseFloat($('.gun-place').offset().left) + parseFloat($('.gun-place').css('padding-left').replace('px', '')) + parseFloat($('.gun-place').css('margin-left').replace('px', ''));
+
+		//entry point
+		$(document).keydown(handleKeyPressed);
+
+		//Processa eventos de teclas
+		function handleKeyPressed(event) {
+			var key = event.originalEvent.key;
+			if (isArrowKey(key)) gun.moveTo(getNewPoint(key));
+			else if (isBigShootingKeys(event)) gun.bigShoot();
+			else if(isShootingKey(event)) gun.shoot();
+		}
+
+		
+
+		var shootInterval;
+		var interval = 10;
+		//Shoots 
+		function shoot() {
+			var shoot = $('<div>');
+			shoot.addClass('shoot');
+
+			var newLeft = (getGunPosition().x + 26) + 'px';
+			shoot.attr('style', 'top:' + (getGunPosition().y + 130) + 'px' + ';left:' + newLeft);;
+			$(gun).before(shoot);
+			shoot.bind('move', move);
+
+			if (!shootInterval) {
+				shootInterval = setInterval(moveShoots, interval );
+			}
+			
+		}
+		
+		function bigShoot(){
+			
+			var shoot = $('<div>');
+			shoot.addClass('shoot');
+			var newLeft = ((getGunPosition().x+2) + 'px');
+			shoot.attr('style', 'top:' + ((getGunPosition().y + 130) + 'px') + ';left:' + newLeft);;
+			$(gun).before(shoot);
+			shoot.bind('move', move);
+			
+			shoot = $('<div>');
+			shoot.addClass('shoot');
+			var newLeft = ((getGunPosition().x + 26) + 'px');
+			shoot.attr('style', 'top:' + ((getGunPosition().y + 130) + 'px') + ';left:' + newLeft);;
+			$(gun).before(shoot);
+			shoot.bind('move', move);
+			
+			shoot = $('<div>');
+			shoot.addClass('shoot');
+			var newLeft = ((getGunPosition().x + 50) + 'px');
+			shoot.attr('style', 'top:' + ((getGunPosition().y + 130) + 'px') + ';left:' + newLeft);;
+			$(gun).before(shoot);
+			shoot.bind('move', move);
+    
+			if (!shootInterval) {
+				shootInterval = setInterval(moveShoots, interval );
+			}
+			
+		}
+
+		var moveStep =15;
+		//Move o shoot adiante
+		function move(step) {
+			var position = getPosition($(this));
+			var left = position.x + 'px';
+			var newTop = ((position.y - moveStep) + 'px');
+			//remove o projetil quando chegar no topo da tela
+			if (newTop.replace('px', '') < 0) {
+				$(this).remove();
+				return;
+			}
+			
+			$(this).attr('style', 'top:' + newTop + ';left:' + left);
+		}
+
+		//Move shoots throughout
+		function moveShoots() {
+
+			var shoots = $('.shoot');
+			shoots.add($('.big-shoot'));
+			for (var i = 0; i < shoots.length; i++) {
+				$(shoots.get(i)).trigger('move');
+			}
+		}
+
+		//Informa se key é a de atirar :(
+		function isShootingKey(event) {
+			return event.originalEvent.code == 'Space';
+		}
+
+		// Informa se é canhão (Space + Ctrl)
+		function isBigShootingKeys(event){
+			return event.originalEvent.ctrlKey && isShootingKey(event);
+		}
+
+		//Cria novas coordenadas x e y do ponto pra onde a gun se moverá. dependendo de key;
+		//Fará a gun se mover para cima, baixo, esquerda ou direita.
+		function getNewPoint(key) {
+
+			var point = getGunPosition();
+
+			var x = point.x;
+			var y = point.y;
+
+			switch (key) {
+				case "ArrowDown":
+					// code for "down arrow" key press.
+					y += step;
+					break;
+				case "ArrowUp":
+					// code for "up arrow" key press.
+					y -= step;
+					break;
+				case "ArrowLeft":
+					// code for "left arrow" key press.
+					x -= step;
+					break;
+				case "ArrowRight":
+					// code for "right arrow" key press.
+					x += step;
+					break;
+				default:
+					; // Quit when this doesn't handle the key event.
+			}
+
+			y = y + 'px';
+			x = x + 'px';
+
+			var newPoint = {
+				x: x,
+				y: y
+			}
+
+			return newPoint;
+
+		}
+
+		//Gets the x and y position of the obj.
+		//If unit is provided, returns x and y in that unit.
+		function getPosition(obj, unit) {
+
+      var x = parseFloat(obj.css('left').replace('px', ''));
+			var y = parseFloat(obj.css('top').replace('px', ''));
+
+			if (unit) {
+				x = x + unit;
+				y = y + unit;
+			}
+
+			var point = {
+				x: x,
+				y: y
+			};
+
+			return point;
+		}
+
+		//Gets the x,y gun's position
+		function getGunPosition(unit) {
+			return getPosition(gun, unit);
+		}
+
+		//Move gun para o ponto point, coordenadas (x,y)
+		function moveTo(point) {
+			gun.attr('style', 'top:' + point.y + ';left:' + point.x);
+		}
+
+		function isArrowKey(key) {
+			return key == 'ArrowDown' || key == 'ArrowUp' || key == 'ArrowLeft' || key == 'ArrowRight';
+		}
+
+	</script>
+
+</body>
+
+</html>
